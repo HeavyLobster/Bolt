@@ -29,16 +29,16 @@ class Bot(commands.AutoShardedBot):
                 title="Failed to parse command arguments:",
                 description=str(error)
             ).set_footer(
-                text=f"View `{ctx.prefix}help` for this command for more information."
+                text="View `{0}help` for this command for more information.".format(ctx.prefix)
             )
             await ctx.send(embed=error_embed)
 
         elif isinstance(error, commands.MissingRequiredArgument):
             error_embed = self.make_error_embed(
                 title="Missing required command argument",
-                description=f"You forgot to specify the `{error.param.name}` argument."
+                description="You forgot to specify the `{0}` argument.".format(error.param.name)
             ).set_footer(
-                text=f"View `{ctx.prefix}help` for this command for more information."
+                text="View `{0}help` for this command for more information.".format(ctx.prefix)
             )
             await ctx.send(embed=error_embed)
 
@@ -53,8 +53,7 @@ class Bot(commands.AutoShardedBot):
 
         elif isinstance(error, commands.NotOwner):
             error_embed = self.make_error_embed(
-                description=f"{ctx.author.mention} is not in the sudoers file. "
-                            "This incident will be reported."
+                description="{0} is not in the sudoers file. This incident will be reported.".format(ctx.author.mention)
             )
             await ctx.send(embed=error_embed)
 
@@ -62,7 +61,7 @@ class Bot(commands.AutoShardedBot):
             error_embed = self.make_error_embed(
                 title="You don't have the necessary permissions to do that.",
                 description="You lack the following permissions: "
-                            ', '.join(f"`{perm}`" for perm in error.missing_perms)
+                            ', '.join("`{0}`".format(perm) for perm in error.missing_perms)
             )
             await ctx.send(embed=error_embed)
 
@@ -70,7 +69,7 @@ class Bot(commands.AutoShardedBot):
             error_embed = self.make_error_embed(
                 title="I don't have the necessary permissions to do that.",
                 description="I lack the following permissions: "
-                            ', '.join(f"`{perm}`" for perm in error.missing_perms)
+                            ', '.join("`{0}`".format(perm) for perm in error.missing_perms)
             )
             await ctx.send(embed=error_embed)
 
@@ -88,7 +87,7 @@ class Bot(commands.AutoShardedBot):
             error_embed = self.make_error_embed(
                 title="You gave me more arguments than I expected.",
             ).set_footer(
-                text=f"View `{ctx.prefix}help` for this command for more information."
+                text="View `{0}help` for this command for more information.".format(ctx.prefix)
             )
 
             error_string = str(error)
@@ -121,24 +120,24 @@ class Bot(commands.AutoShardedBot):
 
             elif isinstance(error.original, HTTPException):
                 error_embed = self.make_error_embed(
-                    title=f"Got status `{error.original.status}`",
+                    title="Got status `{0}`".format(error.original.status),
                     description="Something went wrong and the Discord API "
                                 "didn't allow me to do what I wanted to."
                 )
                 await ctx.send(error_embed)
-                log.error(f"Encountered a command error for message {ctx.message.content}")
+                log.error("Encountered a command error for message {0}".format(ctx.message.content))
                 await super().on_command_error(ctx, error)
 
             else:
                 error_embed = self.make_error_embed(
-                    title=f"Got some weird error that I don't understand",
+                    title="Got some weird error that I don't understand",
                     description="Worry not, the bot administrator has been informed."
                 )
                 await ctx.send(embed=error_embed)
-                log.error(f"Encountered a command error for message {ctx.message.content!r}")
+                log.error("Encountered a command error for message {0}".format(ctx.message.content))
                 await super().on_command_error(ctx, error)
         else:
-            log.error(f"Unhandled command error (from message {ctx.message.content!r})")
+            log.error("Unhandled command error (from message {0})".format(ctx.message.content))
             await super().on_command_error(ctx, error)
 
     async def on_ready(self):

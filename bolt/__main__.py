@@ -24,12 +24,12 @@ if __name__ == '__main__':
         try:
             client.load_extension(MAIN_COGS_BASE_PATH + cog)
         except ModuleNotFoundError as err:
-            log.error(f'Could not load Cog \'{cog}\': {err}.')
+            log.error('Could not load Cog \'{0}\': {1}.'.format(cog, err))
     for cog in OPTIONAL_COGS:
         try:
             client.load_extension(OPTIONAL_COGS_BASE_PATH + cog)
         except ModuleNotFoundError as err:
-            log.error(f'Could not load Cog \'{cog}\': {err}.')
+            log.error('Could not load Cog \'{0}\': {1}.'.format(cog, err))
 
     log.info('Logging in...')
     client.run(CONFIG['discord']['token'])
