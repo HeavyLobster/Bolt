@@ -45,7 +45,7 @@ class Config:
         if cog is None:
             return await ctx.send(embed=discord.Embed(
                 title="Failed to enable Cog:",
-                description=f"No cog named `{cog_name}` found.",
+                description="No cog named `{0}` found.".format(cog_name),
                 colour=discord.Colour.red()
             ))
 
@@ -71,13 +71,13 @@ class Config:
             )
             await ctx.send(embed=discord.Embed(
                 title='Successfully enabled Cog',
-                description=f'`{cog_name}` is now enabled on this Guild.',
+                description='`{0}` is now enabled on this Guild.'.format(cog_name),
                 colour=discord.Colour.green()
             ))
         else:
             await ctx.send(embed=discord.Embed(
                 title='Failed to enable Cog:',
-                description=f'`{cog_name}` is already enabled on this Guild.',
+                description='`{0}` is already enabled on this Guild.'.format(cog_name),
                 colour=discord.Colour.red()
             ))
 
@@ -96,7 +96,7 @@ class Config:
         if cog is None:
             return await ctx.send(embed=discord.Embed(
                 title="Failed to enable Cog:",
-                description=f"No cog named `{cog_name}` found.",
+                description="No cog named `{0}` found.".format(cog_name),
                 colour=discord.Colour.red()
             ))
 
@@ -110,13 +110,13 @@ class Config:
         except DoesNotExist:
             await ctx.send(embed=discord.Embed(
                 title='Failed to disable Cog:',
-                description=f'`{cog_name}` is not enabled on this Guild.',
+                description='`{0}` is not enabled on this Guild.'.format(cog_name),
                 colour=discord.Colour.red()
             ))
         else:
             await ctx.send(embed=discord.Embed(
                 title='Successfully disabled Cog',
-                description=f'`{cog_name}` is now disabled on this Guild.',
+                description='`{0}` is now disabled on this Guild.'.format(cog_name),
                 colour=discord.Colour.green()
             ))
 
@@ -158,13 +158,17 @@ class Config:
 
         else:
             new_prefix = new_prefix.replace('_', ' ')
+            if new_prefix.endswith(' '):
+                spaceWarning = ", with a space"
+            else:
+                spaceWarning = ""
             await objects.create(
                 Prefix,
                 guild_id=ctx.guild.id,
                 prefix=new_prefix
             )
             await ctx.send(embed=discord.Embed(
-                title=f'Set Prefix to `{new_prefix}`{", with a space" if new_prefix.endswith(" ") else ""}.',
+                title='Set Prefix to `{0}`{1}.'.format(new_prefix, spaceWarning),
                 colour=discord.Colour.green()
             ))
             get_prefix_for_guild.cache[(ctx.guild.id,)] = new_prefix
@@ -183,9 +187,13 @@ class Config:
                 colour=discord.Colour.blue()
             ))
         else:
-            humanized_prefix = f"`{prefix}`{', with a space' if prefix.endswith(' ') else ''}"
+            if prefix.endswith(' '):
+                spaceWarning = ", with a space"
+            else:
+                spaceWarning = ""
+            humanized_prefix = "`{0}`{1}".format(prefix, spaceWarning)
             await ctx.send(embed=discord.Embed(
                 title='Custom Guild Prefix',
-                description=f'The custom prefix for this guild is {humanized_prefix}.',
+                description='The custom prefix for this guild is {0}.'.format(humanized_prefix),
                 colour=discord.Colour.blue()
             ))
