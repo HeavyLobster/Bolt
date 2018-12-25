@@ -37,7 +37,7 @@ class Admin:
 
         if extension_name.title() in self.bot.cogs:
             error_embed = discord.Embed(
-                title=f"Failed to load Cog `{extension_name}`:",
+                title="Failed to load Cog `{0}`:".format(extension_name),
                 description="Cog is already loaded",
                 colour=discord.Colour.red()
             )
@@ -48,14 +48,14 @@ class Admin:
                 self.bot.load_extension(MAIN_COGS_BASE_PATH + extension_name)
             except ImportError as err:
                 error_embed = discord.Embed(
-                    title=f"Failed to load Cog `{extension_name}`:",
+                    title="Failed to load Cog `{0}`:".format(extension_name),
                     description=str(err),
                     colour=discord.Colour.red()
                 )
                 await ctx.send(embed=error_embed)
             else:
                 loaded_cog_embed = discord.Embed(
-                    title=f"Loaded Cog `{extension_name}`!",
+                    title="Loaded Cog `{0}`!".format(extension_name),
                     colour=discord.Colour.green()
                 )
                 await ctx.send(embed=loaded_cog_embed)
@@ -67,7 +67,7 @@ class Admin:
 
         if extension_name.title() not in self.bot.cogs:
             error_embed = discord.Embed(
-                title=f"Failed to unload Cog `{extension_name}`:",
+                title="Failed to unload Cog `{0}`:".format(extension_name),
                 description="Cog is not loaded",
                 colour=discord.Colour.red()
             )
@@ -76,7 +76,7 @@ class Admin:
         else:
             self.bot.unload_extension(MAIN_COGS_BASE_PATH + extension_name)
             unloaded_cog_embed = discord.Embed(
-                title=f"Unloaded Cog `{extension_name}`!",
+                title="Unloaded Cog `{0}`!".format(extension_name),
                 colour=discord.Colour.green()
             )
             await ctx.send(embed=unloaded_cog_embed)
@@ -87,8 +87,8 @@ class Admin:
         """List loaded Cogs."""
 
         loaded_cogs_embed = discord.Embed(
-            title=f"Loaded Cogs (`{len(self.bot.cogs)}` total)",
-            description='\n'.join(f"• {cog}" for cog in sorted(self.bot.cogs)),
+            title="Loaded Cogs (`{0}` total)".format(len(self.bot.cogs)),
+            description='\n'.join("• {0}".format(cog) for cog in sorted(self.bot.cogs)),
             colour=discord.Colour.blurple()
         )
         await ctx.send(embed=loaded_cogs_embed)
@@ -127,9 +127,11 @@ class Admin:
     async def guilds(self, ctx):
         """Returns a list of all Guilds that the Bot can see."""
 
+        total = sum(1 for _ in self.bot.guilds)
+
         await ctx.send(embed=discord.Embed(
-            title=f'Guilds ({sum(1 for _ in self.bot.guilds)} total)',
-            description=', '.join(f"{g} (`{g.id}`)" for g in self.bot.guilds),
+            title='Guilds ({0} total)'.format(total),
+            description=', '.join("{0} (`{1}`)".format(g, g.id) for g in self.bot.guilds),
             colour=discord.Colour.blue()
         ))
 
@@ -141,7 +143,7 @@ class Admin:
         guild = self.bot.get_guild(guild_id)
         if guild is not None:
             info_embed = discord.Embed(
-                title=f"{guild} (`{guild.id}`)",
+                title="{0} (`{1}`)".format(guild, guild.id),
                 colour=discord.Colour.blurple(),
                 timestamp=guild.me.joined_at
             ).add_field(
@@ -151,7 +153,7 @@ class Admin:
                 name="Total roles",
                 value=str(len(guild.roles))
             ).set_author(
-                name=f"{guild.owner} ({guild.owner.id})",
+                name="{0} ({1})".format(guild.owner, guild.owner.id),
                 icon_url=guild.owner.avatar_url
             ).set_footer(
                 text="Joined at"
@@ -164,7 +166,7 @@ class Admin:
         else:
             error_embed = discord.Embed(
                 title="Cannot obtain guild information",
-                description=f"Failed to find a guild with the ID `{guild_id}`.",
+                description="Failed to find a guild with the ID `{0}`.".format(guild_id),
                 colour=discord.Colour.red()
             )
             await ctx.send(embed=error_embed)

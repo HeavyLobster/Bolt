@@ -52,7 +52,7 @@ class Infractions:
             )
         except DoesNotExist:
             await ctx.send(embed=discord.Embed(
-                title=f"Failed to find infraction #`{id_}` on this guild.",
+                title="Failed to find infraction #`{0}` on this guild.".format(id_),
                 colour=discord.Colour.red()
             ))
         else:
@@ -60,14 +60,14 @@ class Infractions:
             await objects.update(infraction, only=['reason'])
 
             response_embed = discord.Embed(
-                title=f"Successfully edited infraction #`{id_}`.",
+                title="Successfully edited infraction #`{0}`.".format(id_),
                 colour=discord.Colour.green(),
                 timestamp=datetime.utcnow()
             ).add_field(
                 name="New reason",
                 value=new_reason
             ).set_footer(
-                text=f'Authored by {ctx.author} ({ctx.author.id})',
+                text='Authored by {0} ({1})'.format(ctx.author, ctx.author.id),
                 icon_url=ctx.author.avatar_url
             )
             await ctx.send(embed=response_embed)
@@ -87,12 +87,12 @@ class Infractions:
             )
         except DoesNotExist:
             await ctx.send(embed=discord.Embed(
-                title=f'Failed to find infraction #`{id_}` on this Guild.',
+                title='Failed to find infraction #`{0}` on this Guild.'.format(id_),
                 colour=discord.Colour.red()
             ))
         else:
             info_response = discord.Embed(
-                title=f'Successfully deleted infraction #`{id_}`.',
+                title='Successfully deleted infraction #`{0}`.'.format(id_),
                 colour=discord.Colour.green()
             )
 
@@ -113,8 +113,7 @@ class Infractions:
                     time_until_unmute = active_mute.expiry - datetime.utcnow()
                     expiry_string = humanize.naturaldelta(time_until_unmute)
                     info_response.description = (
-                        f"The accompanying mute expiring in {expiry_string} "
-                        "was also deleted, and the user was unmuted."
+                        "The accompanying mute expiring in {0} was also deleted, and the user was unmuted.".format(expiry_string)
                     )
 
             await objects.delete(infraction)
@@ -134,26 +133,26 @@ class Infractions:
             )
         except DoesNotExist:
             await ctx.send(embed=discord.Embed(
-                title=f'Failed to find infraction ID `{id_}`.',
+                title='Failed to find infraction ID `{0}`.'.format(id_),
                 colour=discord.Colour.red()
             ))
         else:
             infraction_embed = discord.Embed(
-                title=f'Infraction: `{infraction.id}`',
+                title='Infraction: `{0}`'.format(infraction.id),
                 colour=discord.Colour.blue()
             )
 
             infraction_user = self.bot.get_user(infraction.user_id)
             infraction_embed.add_field(
                 name='User',
-                value=(f'`{infraction_user}` (`{infraction_user.id}`)'
+                value=('`{0}` (`{1}`)'.format(infraction_user, infraction_user.id)
                        if infraction_user is not None
-                       else f'unknown user (`{infraction.user_id}`)')
+                       else 'unknown user (`{0}`)'.format(infraction.user_id))
             )
 
             infraction_embed.add_field(
                 name='Type',
-                value=f'{INFRACTION_TYPE_EMOJI[infraction.type]} {infraction.type.value.title()}'
+                value='{0} {1}'.format(INFRACTION_TYPE_EMOJI[infraction.type], infraction.type.value.title())
             ).add_field(
                 name='Creation',
                 value=infraction.created_on.strftime('%d.%m.%y %H:%M')
@@ -171,12 +170,12 @@ class Infractions:
             author_moderator = self.bot.get_user(infraction.moderator_id)
             if author_moderator is not None:
                 infraction_embed.set_footer(
-                    text=f'Authored by {author_moderator} ({author_moderator.id})',
+                    text='Authored by {0} ({1})'.format(author_moderator, author_moderator.id),
                     icon_url=author_moderator.avatar_url
                 )
             else:
                 infraction_embed.set_footer(
-                    text=f'Authored by unknown user (ID: {infraction.moderator_id})'
+                    text='Authored by unknown user (ID: {0})'.format(infraction.moderator_id)
                 )
 
             await ctx.send(embed=infraction_embed)
@@ -194,29 +193,28 @@ class Infractions:
                                  Infraction.type.in_(types))
                           .order_by(Infraction.created_on.desc())
             )
-            selected_types = "`, `".join(f"`{type_.value}`" for type_ in types)
-            title = f'Infractions with types `{selected_types}` on {ctx.guild.name}'
+            selected_types = "`, `".join("`{0}`".format(type_.value) for type_ in types)
+            title = 'Infractions with types `{0}` on {1}'.format(selected_types, ctx.guild.name)
         else:
             all_infractions = await peewee_async.execute(
                 Infraction.select()
                           .where(Infraction.guild_id == ctx.guild.id)
                           .order_by(Infraction.created_on.desc())
             )
-            title = f'All infractions on {ctx.guild.name}'
+            title = 'All infractions on {0}'.format(ctx.guild.name)
 
         lines = []
         for infraction in all_infractions:
             user = self.bot.get_user(infraction.user_id)
             if user is not None:
-                user_string = f'`{user}` (`{user.id}`)'
+                user_string = '`{0}` (`{1}`)'.format(user, user.id)
             else:
-                user_string = f'unknown user (`{infraction.user_id}`)'
+                user_string = 'unknown user (`{0}`)'.format(infraction.user_id)
             infraction_emoji = INFRACTION_TYPE_EMOJI[infraction.type]
 
-            creation_string = infraction.created_on.strftime(f'%d.%m.%y %H:%M')
+            creation_string = infraction.created_on.strftime('%d.%m.%y %H:%M')
             lines.append(
-                f'• [`{infraction.id}`] {infraction_emoji} on '
-                f'{user_string} created {creation_string}'
+                '• [`{0}`] {1} on {2} created {3}'.format(infraction.id, infraction_emoji, user_string, creation_string)
             )
 
         if not lines:
@@ -246,18 +244,17 @@ class Infractions:
 
         if not user_infractions:
             return await ctx.send(embed=discord.Embed(
-                title=f'No recorded infractions for `{user}` (`{user.id}`).',
+                title='No recorded infractions for `{0}` (`{1}`).'.format(user, user.id),
                 colour=discord.Colour.blue()
             ))
 
         most_recent = max(user_infractions, key=attrgetter('created_on'))
         creation_string = most_recent.created_on.strftime('%d.%m.%y %H:%M')
         response = discord.Embed(
-            title=f'Infractions for `{user}` (`{user.id}`)',
+            title='Infractions for `{0}` (`{1}`)'.format(user, user.id),
             colour=discord.Colour.blue()
         ).set_footer(
-            text=f'total infractions: {len(user_infractions)}, '
-                 f"most recent: #{most_recent.id} at {creation_string}",
+            text='total infractions: {0}, most recent: #{1} at {2}'.format(len(user_infractions), most_recent.id, creation_string),
             icon_url=user.avatar_url
         )
 
@@ -265,10 +262,9 @@ class Infractions:
             user_infractions, key=attrgetter('type')
         ):
             response.add_field(
-                name=f'{INFRACTION_TYPE_EMOJI[infraction_type]} {infraction_type.value}s',
+                name='{0} {1}s'.format(INFRACTION_TYPE_EMOJI[infraction_type], infraction_type.value),
                 value='\n'.join(
-                    f"• [`{infraction.id}`] added "
-                    f"{humanize.naturaldelta(datetime.utcnow() - infraction.created_on)} ago"
+                    "• [`{0}`] added {1} ago".format(infraction.id, humanize.naturaldelta(datetime.utcnow() - infraction.created_on))
                     for infraction in infractions
                 )
             )

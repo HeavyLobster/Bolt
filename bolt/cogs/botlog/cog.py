@@ -28,23 +28,23 @@ class BotLog:
             try:
                 self.channel = self.bot.get_channel(int(log_channel_id))
             except ValueError:
-                log.error(f"{log_channel_id} is not a valid channel ID, must be an integer")
+                log.error("{0} is not a valid channel ID, must be an integer".format(log_channel_id))
             else:
                 if self.channel is None:
-                    log.error(f"Failed to find bot log channel under ID {log_channel_id}")
+                    log.error("Failed to find bot log channel under ID {0}".format(log_channel_id))
                 else:
                     info_embed = Embed(
                         title="Logged in and ready",
                         colour=Colour.green()
                     ).add_field(
                         name="Total members",
-                        value=f"`{len(self.bot.users)}`"
+                        value="`{0}`".format(len(self.bot.users))
                     ).add_field(
                         name="Total guilds",
-                        value=f"`{len(self.bot.guilds)}`"
+                        value="`{0}`".format(len(self.bot.guilds))
                     ).add_field(
                         name="Total commands",
-                        value=f"`{len(self.bot.commands)}`"
+                        value="`{0}`".format(len(self.bot.commands))
                     )
                     await self.channel.send(embed=info_embed)
 
@@ -55,19 +55,19 @@ class BotLog:
                 colour=Colour.blurple()
             ).add_field(
                 name="Total guild members",
-                value=f"`{guild.member_count}`"
+                value="`{0}`".format(guild.member_count)
             ).add_field(
                 name="Total channels",
-                value=f"`{len(guild.channels)}`"
+                value="`{0}`".format(len(guild.channels))
             ).add_field(
                 name="Owner",
-                value=f"{guild.owner} (`{guild.owner.id}`)"
+                value="{0} (`{1}`)".format(guild.owner, guild.owner.id)
             ).add_field(
                 name="Creation",
-                value=f"{guild.created_at.strftime('%d.%m.%y %H:%M')} "
-                      f"({humanize.naturaldelta(datetime.utcnow() - guild.created_at)})"
+                value="{0} ({1})".format(guild.created_at.strftime('%d.%m.%y %H:%M'), humanize.naturaldelta(datetime.utcnow() - guild.created_at))
+                      
             ).set_author(
-                name=f"{guild} ({guild.id})"
+                name="{0} ({0})".format(guild, guild.id)
             )
 
             if guild.icon_url:
